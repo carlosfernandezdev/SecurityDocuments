@@ -1,0 +1,18 @@
+:root { --bg:#0e1324; --card:#121a33; --txt:#e6ebff; --muted:#9aa4c7; --pri:#5b86ff; --ok:#2ecc71; --warn:#f39c12; --bad:#e74c3c; }
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(120deg,#0e1324,#18223b);color:var(--txt);font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
+.container{max-width:980px;margin:32px auto;padding:0 16px}
+h1{margin:0 0 8px;font-size:26px} p{color:var(--muted)}
+.card{background:var(--card);border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+input,button{border-radius:10px;border:1px solid #2a3a66;background:#0f1730;color:#cfd7f0;padding:10px}
+button{background:var(--pri);border:0;cursor:pointer}
+label{display:block;margin:8px 0 4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.small{font-size:12px;white-space:pre-wrap}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, monospace}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:8px;border-bottom:1px solid #243058}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
+.badge.ok{background:rgba(46,204,113,.15); color:#9be7b4}
+.badge.warn{background:rgba(243,156,18,.15); color:#f6d49b}
+.badge.bad{background:rgba(231,76,60,.15); color:#f2a4a4}
+.toast{position:fixed;right:16px;bottom:16px;background:#0f1730;border:1px solid #2a3a66;border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.35)}

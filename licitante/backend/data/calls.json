@@ -1,0 +1,22 @@
+{
+  "calls": [
+    {
+      "call_id": "2025-10-10-003957",
+      "key_id": "default",
+      "rsa_pub_pem_url": "http://127.0.0.1:8001/convocante/public/keys/2025-10-10-003957/rsa_pub.pem",
+      "created_at": "2025-10-10T04:50:00.113776Z"
+    },
+    {
+      "call_id": "PEDRO",
+      "key_id": "PEDRO",
+      "rsa_pub_pem_url": "http://127.0.0.1:8001/convocante/public/keys/PEDRO/rsa_pub.pem",
+      "created_at": "2025-10-10T04:50:53.330819Z"
+    },
+    {
+      "call_id": "2025-10-10-012913",
+      "key_id": "default",
+      "rsa_pub_pem_url": "http://127.0.0.1:8001/convocante/public/keys/2025-10-10-012913/rsa_pub.pem",
+      "created_at": "2025-10-10T05:29:16.216513Z"
+    }
+  ]
+}
