@@ -1,1 +1,5 @@
-\licitante\frontend\node_modules
+/licitante/frontend/node_modules/
+/licitante/backend/node_modules/
+/convocante/convocante-frontend/node_modules/
+/convocante/convocante-backend/node_modules/
+keys/
