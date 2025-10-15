@@ -9,15 +9,13 @@ async function http(method, url, body, isJson = true) {
   } else if (body instanceof FormData) {
     init.body = body
   }
-
   const res = await fetch(`${BASE}${url}`, init)
   if (!res.ok) {
     let errText
     try { errText = await res.text() } catch { errText = `${res.status}` }
     throw new Error(errText)
   }
-  if (isJson) return res.json()
-  return res.text()
+  return isJson ? res.json() : res.text()
 }
 
 export const api = {
@@ -31,7 +29,8 @@ export const api = {
     if (!res.ok) throw new Error('No se pudo descargar la clave pública')
     return res.text()
   },
-  // Solo para pruebas locales del admin:
+
+  // Recepción (solo para pruebas locales)
   submitProposalParts: (files) => {
     const form = new FormData()
     form.append('meta', files.meta)
@@ -40,5 +39,10 @@ export const api = {
     form.append('nonce', files.nonce)
     form.append('tag', files.tag)
     return http('POST', `/internal/receive-proposal?secret=${encodeURIComponent(SECRET)}`, form)
-  }
+  },
+
+  // NUEVO: submissions
+  listSubmissions: (call_id) => http('GET', `/api/calls/${encodeURIComponent(call_id)}/submissions`),
+  downloadSubmissionFileUrl: (call_id, submission_id, filename) =>
+    `${BASE}/api/calls/${encodeURIComponent(call_id)}/submissions/${encodeURIComponent(submission_id)}/files/${encodeURIComponent(filename)}`
 }
