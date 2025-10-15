@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "call_id": "acoplado",
+  "key_id": "call-acoplado-20251015-060717-368e",
+  "alg": {
+    "aead": "AES-256-GCM",
+    "wrap": "RSA-OAEP-SHA256",
+    "sig": "Ed25519",
+    "hash": "SHA-256"
+  },
+  "bidder": {
+    "name": "ppp",
+    "identifier": "93938",
+    "ed25519_pk_hex": "7b13a1ab13a8ee57e4ea08ac749cf0443bab3e448671df7e4ec179de8f29bb70"
+  },
+  "payload_sha256": "b102491633aa14fc5d3dd40350b7656ef4cf9cc30e3b2bb198b313f53479dd7f",
+  "content_zip_sha256": "31f18f211e3949ee00906337616a9de169cbde6d8a9382f9c0d12fc8983a282a",
+  "timestamp": "2025-10-15T06:09:18.644426Z"
+}

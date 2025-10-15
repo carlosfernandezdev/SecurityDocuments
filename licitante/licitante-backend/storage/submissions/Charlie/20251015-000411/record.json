@@ -1,0 +1,15 @@
+{
+  "id": "20251015-000411",
+  "call_id": "Charlie",
+  "bidder_identifier": "55555",
+  "status": "ok",
+  "created_at": "20251015-000411",
+  "response": {
+    "status": "ok",
+    "call_id": "Charlie",
+    "key_id": "call-Charlie-20251015-025327-dcf1",
+    "content_zip_sha256": "dde4dbc85a9beeb85ff229680ee2b5cf2794aef36f73a83fbfd629e95f6c8734",
+    "submission_id": "20251015-000411",
+    "content_dir": "C:\\Users\\Usuario\\Documents\\SeguridadInformatica\\convocante\\convocante-backend\\storage\\processed\\Charlie\\20251015-000411\\content"
+  }
+}
