@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "call_id": "2025-10-10-012913",
+  "key_id": "default",
+  "alg": {
+    "aead": "AES-256-GCM",
+    "wrap": "RSA-OAEP-SHA256",
+    "sig": "Ed25519",
+    "hash": "SHA-256"
+  },
+  "bidder": {
+    "name": "Carlos Fernandez",
+    "identifier": "29607448",
+    "ed25519_pk_hex": "7b13a1ab13a8ee57e4ea08ac749cf0443bab3e448671df7e4ec179de8f29bb70"
+  },
+  "payload_sha256": "90ae6dcce9d7edf4584f11c10f9920becf288c33c4286071400d5c99a83bb048",
+  "content_zip_sha256": "b03bbe26db2b92c1c296ea358f230b721e8813a05bf7ffacea4e8f67e4b10330",
+  "timestamp": "2025-10-10T05:31:28.678201Z",
+  "sealed_zip_sha256": "c7749a3f8832eab5411da671686c18887ceb9def4de126aa4af251c07c6feba6"
+}

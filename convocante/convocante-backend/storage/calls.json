@@ -1,0 +1,24 @@
+{
+  "calls": [
+    {
+      "call_id": "TEST-001",
+      "key_id": "default"
+    },
+    {
+      "call_id": "TEST-002",
+      "key_id": "carlos"
+    },
+    {
+      "call_id": "OBRA-001",
+      "key_id": "call-OBRA-001-20251015-015420-6d92",
+      "created_at": "2025-10-15T01:54:21.182643Z",
+      "status": "active"
+    },
+    {
+      "call_id": "Charlie",
+      "key_id": "call-Charlie-20251015-025327-dcf1",
+      "created_at": "2025-10-15T02:53:27.366793Z",
+      "status": "active"
+    }
+  ]
+}
