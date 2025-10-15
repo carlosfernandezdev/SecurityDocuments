@@ -1,4 +1,8 @@
 # Levantar servicios
 ## Convocante
-- Front Convocante: npm run dev.
-- Back Convocante: uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
+- Front: npm run dev.
+- Back: uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
+
+## Licitante
+- Front: npm run dev
+- Back:uvicorn app.main:app --reload --host 127.0.0.1 --port 8002

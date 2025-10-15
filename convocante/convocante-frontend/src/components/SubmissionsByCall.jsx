@@ -1,14 +1,17 @@
+// src/components/SubmissionsByCall.jsx
 import { useEffect, useState } from 'react'
-import { api } from '../services/api.js'
+import { api, selectWinner} from '../services/api.js'
+import ContentList from './ContentList.jsx'
 
 export default function SubmissionsByCall({ callId, onClose }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [openSubmission, setOpenSubmission] = useState('')
 
   useEffect(() => {
     const run = async () => {
-      setLoading(true); setError('')
+      setLoading(true); setError(''); setOpenSubmission('')
       try {
         const list = await api.listSubmissions(callId)
         setItems(list)
@@ -35,11 +38,12 @@ export default function SubmissionsByCall({ callId, onClose }) {
             <th>submission_id</th>
             <th>creado</th>
             <th>archivos</th>
+            <th>contenido</th>
           </tr>
         </thead>
         <tbody>
           {items.length === 0 && !loading && (
-            <tr><td colSpan={3} className="muted">Sin submissions aún</td></tr>
+            <tr><td colSpan={4} className="muted">Sin submissions aún</td></tr>
           )}
           {items.map((s) => (
             <tr key={s.submission_id}>
@@ -47,25 +51,53 @@ export default function SubmissionsByCall({ callId, onClose }) {
               <td>{s.created_at}</td>
               <td>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {['content.zip','result.json','manifest.json','signature.bin','sealed_base.zip'].map((fname) => {
+                  {['result.json','manifest.json','signature.bin','sealed_base.zip','content.zip'].map((fname) => {
                     const has = s.files.find(f => f.name === fname)
                     if (!has) return null
-                    const href = api.downloadSubmissionFileUrl(callId, s.submission_id, fname)
-                    const label = fname === 'content.zip' ? 'Descargar content.zip' :
-                                  fname === 'result.json' ? 'Ver result.json' : fname
+                    const href = has.download_url.startsWith('/convocante')
+                      ? `${api.base}${has.download_url.replace('/convocante','')}`
+                      : `${api.base}${has.download_url}`
+                    const label = fname === 'result.json' ? 'Ver result.json' : fname
                     const target = fname === 'result.json' ? '_blank' : '_self'
                     return (
-                      <a key={fname} className="btn" href={href} target={target} rel="noreferrer">
+                      <a key={fname} className="btn ghost" href={href} target={target} rel="noreferrer">
                         {label}
                       </a>
                     )
                   })}
                 </div>
               </td>
+              <td>
+                <button className="btn" onClick={() => setOpenSubmission(
+                  openSubmission === s.submission_id ? '' : s.submission_id
+                )}>
+                  {openSubmission === s.submission_id ? 'Ocultar contenido' : `Ver contenido (${s?.content?.count ?? 0})`}
+                </button>
+
+                {/* Botón Seleccionar ganador */}
+                <button
+                  className="btn ghost"
+                  style={{ marginLeft: 8 }}
+                  onClick={async () => {
+                    try {
+                      const res = await selectWinner(callId, s.submission_id, 'selección desde panel')
+                      alert('Notificado:\n' + JSON.stringify(res, null, 2))
+                    } catch (e) {
+                      alert('Error al notificar: ' + e)
+                    }
+                  }}
+                >
+                  Seleccionar ganador
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {openSubmission && (
+        <ContentList callId={callId} submissionId={openSubmission} />
+      )}
     </div>
   )
 }

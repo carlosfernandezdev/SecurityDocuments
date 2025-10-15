@@ -1,3 +1,4 @@
+// src/services/api.js
 const BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8001/convocante'
 const SECRET = import.meta.env.VITE_SHARED_SECRET || 'SHARED_SECRET'
 
@@ -41,8 +42,28 @@ export const api = {
     return http('POST', `/internal/receive-proposal?secret=${encodeURIComponent(SECRET)}`, form)
   },
 
-  // NUEVO: submissions
+  // Submissions
   listSubmissions: (call_id) => http('GET', `/api/calls/${encodeURIComponent(call_id)}/submissions`),
   downloadSubmissionFileUrl: (call_id, submission_id, filename) =>
-    `${BASE}/api/calls/${encodeURIComponent(call_id)}/submissions/${encodeURIComponent(submission_id)}/files/${encodeURIComponent(filename)}`
+    `${BASE}/api/calls/${encodeURIComponent(call_id)}/submissions/${encodeURIComponent(submission_id)}/files/${encodeURIComponent(filename)}`,
+
+  // Contenido
+  listContentFiles: (call_id, submission_id) =>
+    http('GET', `/api/calls/${encodeURIComponent(call_id)}/submissions/${encodeURIComponent(submission_id)}/content`),
+
+  downloadContentFileUrl: (call_id, submission_id, relPath) =>
+    `${BASE}/api/calls/${encodeURIComponent(call_id)}/submissions/${encodeURIComponent(submission_id)}/content/${encodeURIComponent(relPath)}`,
+}
+
+/** Seleccionar ganador (aceptado) y rechazar el resto */
+export const selectWinner = async (callId, submissionId, notes = '') => {
+  // Reutilizamos api.base (ya incluye /convocante)
+  const params = new URLSearchParams({ call_id: callId, submission_id: submissionId, notes })
+  const r = await fetch(`${api.base}/api/decisions/select`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+  })
+  if (!r.ok) throw new Error(await r.text())
+  return r.json()
 }

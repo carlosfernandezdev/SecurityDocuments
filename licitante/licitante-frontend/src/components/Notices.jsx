@@ -1,50 +1,76 @@
-import { useEffect, useState } from 'react';
-import { api } from '../services/api';
-import { loadAuth } from '../services/auth';
+import { useEffect, useState } from "react";
+import { getUserNotices, getCallSummary } from "../services/api";
 
 export default function Notices(){
-  const [items,setItems]=useState([]);
-  const [loading,setLoading]=useState(false);
-  const [err,setErr]=useState('');
-  const auth = loadAuth();
-  const bidderId = auth?.bidder_id || '';
+  const [user, setUser] = useState("");
+  const [callId, setCallId] = useState("");
+  const [items, setItems] = useState([]);
+  const [summary, setSummary] = useState(null);
+  const [status, setStatus] = useState("");
 
-  const refresh = async() => {
-    setLoading(true); setErr('');
+  const load = async () => {
+    setStatus("Cargando...");
     try{
-      const list = await api.listNotifications(bidderId || undefined);
-      setItems(list);
+      const [u, s] = await Promise.all([
+        user ? getUserNotices(user, callId) : Promise.resolve({items:[]}),
+        callId ? getCallSummary(callId) : Promise.resolve(null)
+      ]);
+      setItems(u.items || []);
+      setSummary(s);
+      setStatus("");
     }catch(e){
-      setErr(e?.message||'Error');
-    }finally{
-      setLoading(false);
+      setStatus(String(e));
     }
   };
 
-  useEffect(()=>{ refresh(); /* refresh when bidder changes */ }, [bidderId]);
+  useEffect(()=>{ /* carga inicial vacía */ },[]);
 
   return (
-    <div>
+    <div className="card">
+      <h2>Notificaciones</h2>
       <div className="row">
-        <h3>Notificaciones {bidderId ? <span className="muted">({bidderId})</span> : null}</h3>
-        <button className="btn ghost" onClick={refresh} disabled={loading}>{loading?'Actualizando…':'Actualizar'}</button>
+        <label>Usuario</label>
+        <input value={user} onChange={(e)=>setUser(e.target.value)} placeholder="ej: 5555" />
+        <label>Convocatoria</label>
+        <input value={callId} onChange={(e)=>setCallId(e.target.value)} placeholder="ej: Charlie" />
+        <button onClick={load}>Buscar</button>
       </div>
-      {err && <div className="alert error">{err}</div>}
-      <table className="table">
-        <thead><tr><th>call_id</th><th>licitante</th><th>decisión</th><th>notas</th></tr></thead>
-        <tbody>
-          {items.length===0 && <tr><td colSpan={4} className="muted">Sin notificaciones</td></tr>}
-          {items.map((n,i)=>(
-            <tr key={i}>
-              <td className="code">{n.call_id}</td>
-              <td className="code">{n.bidder_identifier}</td>
-              <td>{n.decision}</td>
-              <td>{n.notes||'-'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {!bidderId && <div className="muted" style={{marginTop:6}}>Sugerencia: inicia sesión para ver sólo las tuyas.</div>}
+
+      {status && <pre>{status}</pre>}
+
+      {summary && (
+        <section className="card" style={{marginTop:12}}>
+          <h3>Resumen por convocatoria: {summary.call_id}</h3>
+          <p><b>Seleccionado:</b> {summary.selected || "(pendiente)"}</p>
+          <ul>
+            {(summary.results||[]).map((r,i)=>(
+              <li key={i}>
+                submission_id: <code>{r.submission_id}</code> — decision: <b>{r.decision}</b> {r.bidder_identifier?`— bidder: ${r.bidder_identifier}`:""}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section className="card" style={{marginTop:12}}>
+        <h3>Notificaciones del usuario {user || "(sin usuario)"}</h3>
+        {items.length===0 ? <p className="muted">Sin notificaciones</p> : (
+          <table className="table">
+            <thead><tr>
+              <th>call_id</th><th>submission_id</th><th>decision</th>
+            </tr></thead>
+            <tbody>
+              {items.map((n,idx)=>(
+                <tr key={idx}>
+                  <td>{n.call_id}</td>
+                  <td><code>{n.submission_id}</code></td>
+                  <td><b>{n.decision}</b></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
     </div>
   );
 }

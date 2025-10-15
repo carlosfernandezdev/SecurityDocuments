@@ -20,10 +20,10 @@ def _save(doc: Dict):
     CALLS_DB.write_text(json.dumps(doc, indent=2, ensure_ascii=False), encoding="utf-8")
 
 def get_pubkey_path(key_id: str) -> Path:
-    return settings.KEYS_DIR / f"{key_id}_rsa_pub.pem"
+    return settings.KEYS_DIR / key_id / "rsa_pub.pem"
 
 def get_privkey_path(key_id: str) -> Path:
-    return settings.KEYS_DIR / f"{key_id}_rsa_priv.pem"
+    return settings.KEYS_DIR / key_id / "rsa_priv.pem"
 
 def _call_exists(call_id: str) -> bool:
     return any(c["call_id"] == call_id for c in _load()["calls"])
@@ -36,19 +36,23 @@ def _make_key_id(call_id: str) -> str:
     return f"call-{safe_call}-{ts}-{rnd}"
 
 def _generate_rsa_pair(key_id: str, bits: int = 3072):
-    settings.KEYS_DIR.mkdir(parents=True, exist_ok=True)
+    keydir = settings.KEYS_DIR / key_id
+    keydir.mkdir(parents=True, exist_ok=True)
+
     priv = rsa.generate_private_key(public_exponent=65537, key_size=bits)
     priv_pem = priv.private_bytes(
         encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption(),
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption()
     )
     pub_pem = priv.public_key().public_bytes(
         encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
-    get_privkey_path(key_id).write_bytes(priv_pem)
-    get_pubkey_path(key_id).write_bytes(pub_pem)
+
+    (keydir / "rsa_priv.pem").write_bytes(priv_pem)
+    (keydir / "rsa_pub.pem").write_bytes(pub_pem)
+
 
 def add_call(call_id: str) -> Dict:
     # Política: call_id único. Si quieres permitir versiones, cámbialo aquí.

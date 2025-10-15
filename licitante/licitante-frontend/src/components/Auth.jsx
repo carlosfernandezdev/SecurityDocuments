@@ -13,14 +13,16 @@ export default function Auth({ onAuthChange }) {
   const [loading, setLoading] = useState(false);
 
   const refreshAccounts = async () => {
-    setErr(''); setLoading(true);
-    try {
-      const list = await api.listAccounts();
-      setRegistered(list || []);
-    } catch (e) {
-      setErr(e?.message || 'Error listando cuentas');
-    } finally { setLoading(false); }
-  };
+  setErr(''); setLoading(true);
+  try {
+    const list = await api.listAccounts();
+    // list ahora SIEMPRE es array de objetos { bidder_id }
+    setRegistered(Array.isArray(list) ? list : []);
+  } catch (e) {
+    setErr(e?.message || 'Error listando cuentas');
+    setRegistered([]); // blindaje
+  } finally { setLoading(false); }
+};
 
   useEffect(() => { refreshAccounts(); }, []);
 
@@ -78,9 +80,9 @@ export default function Auth({ onAuthChange }) {
           <div style={{marginTop:12}}>
             <h4 className="muted" style={{marginBottom:6}}>Cuentas registradas</h4>
             <ul style={{margin:0, paddingLeft:18}}>
-              {registered.length === 0 && <li className="muted">No hay cuentas</li>}
-              {registered.map(a => <li key={a.bidder_id}><code>{a.bidder_id}</code></li>)}
-            </ul>
+  {registered.length === 0 && <li className="muted">No hay cuentas</li>}
+  {registered.map(a => <li key={a.bidder_id}><code>{a.bidder_id}</code></li>)}
+</ul>
           </div>
         </div>
 

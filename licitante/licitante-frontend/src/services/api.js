@@ -17,6 +17,32 @@ async function http(method, url, body, isJson = true) {
   return isJson ? res.json() : res.text();
 }
 
+export const getUserNotices = async (user, callId = "") => {
+  const r = await fetch(`${BASE}/${encodeURIComponent(user)}/api/notifications${callId ? `?call_id=${encodeURIComponent(callId)}` : ""}`);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+};
+
+export const getCallSummary = async (callId) => {
+  const r = await fetch(`${BASE}/api/notifications/by-call/${encodeURIComponent(callId)}`);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+};
+export const getAccounts = async () => {
+  const r = await fetch(`${BASE}/api/accounts`);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+};
+
+export const setActiveAccount = async (user) => {
+  const r = await fetch(`${BASE}/api/accounts/active`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user }),
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+};
 export const api = {
   base: BASE,
   // Convocatorias
